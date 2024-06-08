@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Freeman&display=swap" rel="stylesheet">
+    <title>Items to dryclean</title>
+    <style>
+        body {
+            font-family: "Freeman", sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: bounceIn 1s;
+        }
+
+        .top-nav {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-nav img {
+            width: 120px;
+            height: auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+            margin-bottom: 60px; 
+            box-sizing: border-box;
+            animation: fadeIn 0.5s ease-in-out;
+            margin-top: 40px;
+        }
+
+        .bottom-nav a {
+            color: #1b1b1b;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            font-weight: 200;
+            align-items: center;
+        }
+
+        .bottom-nav a img {
+            width: 25px;
+            height: 25px;
+            margin-bottom: 1px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        header h1 span {
+            color: #0f75bc;
+        }
+
+        .menu-icon {
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .items-section {
+            margin-top: 20px;
+        }
+
+        .items-section h2 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.158);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .item:hover {
+            transform: translateY(-5px);
+        }
+
+        .item img {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-details h3 {
+            font-size: 1em;
+            color: #0f75bc;
+            margin: 0;
+        }
+
+        .item-details p {
+            font-size: 0.9em;
+            color: #333;
+            margin: 5px 0 0 0;
+        }
+
+        .cart-button {
+            position: fixed;
+            right: 20px;
+            top: 50%;   
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: center;
+        }
+
+        .cart-button button {
+            font-size: 1em;
+            width: 80px;   
+            height: 80px;  
+            border: none;
+            background-color: #0f75bc;
+            color: white;
+            border-radius: 50%; 
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-button button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            justify-content: center; 
+            align-items: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px; 
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: bounceIn 0.5s ease-in-out;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .quantity-controls button {
+            font-size: 1.2em;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background-color: #f0f8ff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #e0e8ff;
+        }
+
+        .quantity-controls span {
+            font-size: 1.2em;
+            padding: 0 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .modal-footer button {
+            background-color: #0f75bc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .modal-footer button:hover {
+            background-color: #0056b3;
+        }
+
+        .user-details-form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        .user-details-form label {
+            margin: 5px 0;
+        }
+
+        .user-details-form input[type="text"],
+        .user-details-form input[type="tel"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .address-options {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .address-options button {
+            background-color: #0f75bc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .address-options button:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounceIn {
+            0%, 20%, 40%, 60%, 80%, 100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+            50% {
+                -webkit-transform: translateY(-20px);
+                transform: translateY(-20px);
+            }
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 40px;
+            }
+
+            .bottom-nav {
+                padding: 10px 0;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                padding: 40px;
+            }
+
+            .modal-content {
+                margin: 10% auto; 
+            }
+        }
+        .search-bar {
+            position: relative;
+            width: 70px;
+            height: 40px;
+        }
+
+        .search-bar input {
+            width: 200px;
+            height: 50%;
+            padding: 10px 15px;
+            border: 2px solid #ccc;
+            border-radius: 20px;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #007BFF;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .search-bar button:hover {
+            color: #0056b3;
+        }
+
+        .search-bar input::placeholder {
+            color: #999;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .search-bar input:focus::placeholder {
+            color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <img src="img/Laundry-Spot.png" alt="Logo">
+    </nav>
+    <div class="container">
+        <header>
+            <h1>Select <span>Items to  dryclean</span></h1>
+            
+            <img style="width: 50px;" src="img/washing-machine .png" alt="Menu">
+        </header>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search items...">
+        </div>
+        <div class="items-section">
+            <h2>Available Items</h2>
+            <div class="item" data-name=" TShirt" data-price="2250">
+                <img src="icon/cloth.png" alt="Shirt">
+                <div class="item-details">
+                    <h3>T Shirt</h3>
+                    <p>Price: ₦2250.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Jeans" data-price="3150">
+                <img src="icon/jeans.png" alt="Jeans">
+                <div class="item-details">
+                    <h3>Jeans</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" shorts" data-price="3150">
+                <img src="icon/pants.png" alt="shorts">
+                <div class="item-details">
+                    <h3>Shorts</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Skirts" data-price="3150">
+                <img src="icon/clothes.png" alt="Skirts">
+                <div class="item-details">
+                    <h3>Skirts</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" blouses" data-price="3150">
+                <img src="icon/blouse.png" alt="louses">
+                <div class="item-details">
+                    <h3>Blouses</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Shirts" data-price="3150">
+                <img src="icon/cloth.png" alt="Shirts">
+                <div class="item-details">
+                    <h3>Shirts</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Tank tops" data-price="3150">
+                <img src="icon/tank-top.png" alt="Pants">
+                <div class="item-details">
+                    <h3>Tank tops</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Leggings" data-price="3150">
+                <img src="icon/leggings.png" alt="Pants">
+                <div class="item-details">
+                    <h3>Leggings</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Sweaters" data-price="3150">
+                <img src="icon/pullover.png" alt="Pants">
+                <div class="item-details">
+                    <h3>Sweaters</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Jackets" data-price="3150">
+                <img src="icon/hoodie.png" alt="Jackets">
+                <div class="item-details">
+                    <h3>Hoodies</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Jackets" data-price="3150">
+                <img src="icon/denim-jacket.png" alt="Jackets">
+                <div class="item-details">
+                    <h3>Jackets</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Scarves" data-price="3150">
+                <img src="icon/accessory.png" alt="Scarves">
+                <div class="item-details">
+                    <h3>Scarves</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Socks" data-price="3150">
+                <img src="icon/socks.png" alt="Socks">
+                <div class="item-details">
+                    <h3>Socks</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" boxers" data-price="3150">
+                <img src="icon/pants.png" alt="Underwear">
+                <div class="item-details">
+                    <h3>boxers</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Bras" data-price="3150">
+                <img src="icon/underwear (1).png" alt="Bras">
+                <div class="item-details">
+                    <h3>Bras</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Pajamas" data-price="3150">
+                <img src="icon/night.png" alt="Pajamas">
+                <div class="item-details">
+                    <h3>Pajamas</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Robes" data-price="3150">
+                <img src="icon/bath-robe.png" alt="Robes">
+                <div class="item-details">
+                    <h3>Robes</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" swimwear" data-price="3150">
+                <img src="icon/swimwear.png" alt="swimwear">
+                <div class="item-details">
+                    <h3>Swimwear</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Jumpsuits" data-price="3150">
+                <img src="icon/jumpsuit.png" alt="Jumpsuits">
+                <div class="item-details">
+                    <h3>Jumpsuits</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Polo shirts" data-price="3150">
+                <img src="icon/polo-shirt.png" alt="Polo shirts">
+                <div class="item-details">
+                    <h3>Polo shirts</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Tracksuits" data-price="3150">
+                <img src="icon/tracksuit.png" alt="Tracksuits">
+                <div class="item-details">
+                    <h3>Tracksuits</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Yoga Pants" data-price="3150">
+                <img src="icon/tank-top.png" alt="Pants">
+                <div class="item-details">
+                    <h3>Yoga pants</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Chinos" data-price="3150">
+                <img src="icon/trousers.png" alt="Pants">
+                <div class="item-details">
+                    <h3>Chinos</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Suit trouser" data-price="3150">
+                <img src="icon/trousers (1).png" alt="Pants">
+                <div class="item-details">
+                    <h3>Suit trouser</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Suit jackets" data-price="3150">
+                <img src="icon/suit.png" alt="Suit jackets">
+                <div class="item-details">
+                    <h3>Suit jackets</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Ankara attire" data-price="3150">
+                <img src="icon/hawaiian-shirt.png" alt="Ankara attire">
+                <div class="item-details">
+                    <h3>Ankara attire</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Aso Oke attire" data-price="3150">
+                <img src="icon/hawaiian-shirt.png" alt="PAso Oke attire">
+                <div class="item-details">
+                    <h3>Aso Oke attire</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="item" data-name=" Agbada attire" data-price="3150">
+                <img src="icon/hawaiian-shirt.png" alt="Agbada attire">
+                <div class="item-details">
+                    <h3>Agbada attire</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            
+           
+           
+            <div class="item" data-name=" jersey" data-price="3150">
+                <img src="icon/soccer.png" alt="jersey">
+                <div class="item-details">
+                    <h3>jersey</h3>
+                    <p>Price: ₦3150.00</p>
+                </div>
+            </div>
+            <div class="cart-button">
+                <button id="cartButton">View Cart</button>
+            </div>
+        </div>
+        
+    <div class="bottom-nav">
+        <a href="bord.html">
+            <img src="img/home.png" alt="Home">
+            <span>Home</span>
+        </a>
+        <a href="packages.html">
+            <img src="img/favorite.png" alt="Services">
+            <span>Packages</span>
+        </a>
+        <a href="reviews.html">
+            <img src="img/reviews.png" alt="Profile">
+            <span>Reviews</span>
+        </a>
+        <a href="report.html">
+            <img src="img/report_.png" alt="Orders">
+            <span>Reports</span>
+        </a>
+    </div>
+
+    <!-- Item Quantity Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalItemName">Item Name</h2>
+            <p id="modalItemPrice">Price: ₦0.00</p>
+            <div class="quantity-controls">
+                <button id="decreaseQty">-</button>
+                <span id="itemQty">1</span>
+                <button id="increaseQty">+</button>
+            </div>
+            <div class="modal-footer">
+                <button id="addToCart">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Modal -->
+    <div id="summaryModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Order Summary</h2>
+            <div id="orderSummary"></div>
+            <h3>Total: ₦<span id="totalPrice">0.00</span></h3>
+            <div class="modal-footer">
+                <button id="proceedToPayment">Pay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="userDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Enter Your Details</h2>
+            <form id="userDetailsForm" class="user-details-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+                <label for="address">Home Address:</label>
+                <input type="text" id="address" name="address" required>
+                <button type="submit">Submit</button>
+            </form>
+            <div class="address-options">
+                <p>Or share your address via phone:</p>
+                <button id="shareAddress">Share Address</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.item');
+            const itemModal = document.getElementById('itemModal');
+            const summaryModal = document.getElementById('summaryModal');
+            const userDetailsModal = document.getElementById('userDetailsModal');
+            const modalItemName = document.getElementById('modalItemName');
+            const modalItemPrice = document.getElementById('modalItemPrice');
+            const itemQty = document.getElementById('itemQty');
+            const addToCartButton = document.getElementById('addToCart');
+            const proceedToPaymentButton = document.getElementById('proceedToPayment');
+            const cartButton = document.getElementById('cartButton');
+            const totalPriceElement = document.getElementById('totalPrice');
+            const userDetailsForm = document.getElementById('userDetailsForm');
+            const shareAddressButton = document.getElementById('shareAddress');
+            const nameField = document.getElementById('name');
+            const phoneField = document.getElementById('phone');
+            const addressField = document.getElementById('address');
+            const searchInput = document.getElementById('searchInput');
+            let currentQty = 1;
+            let cart = [];
+
+            items.forEach(item => {
+                item.addEventListener('click', () => {
+                    const itemName = item.getAttribute('data-name');
+                    const itemPrice = item.getAttribute('data-price');
+                    openItemModal(itemName, itemPrice);
+                });
+            });
+
+            document.getElementById('decreaseQty').addEventListener('click', () => {
+                updateQuantity(-1);
+            });
+
+            document.getElementById('increaseQty').addEventListener('click', () => {
+                updateQuantity(1);
+            });
+
+            addToCartButton.addEventListener('click', addToCart);
+            cartButton.addEventListener('click', showCartSummary);
+            proceedToPaymentButton.addEventListener('click', () => {
+                summaryModal.style.display = 'none';
+                userDetailsModal.style.display = 'flex';
+            });
+
+            userDetailsForm.addEventListener('submit', handleSubmit);
+            shareAddressButton.addEventListener('click', shareAddress);
+            
+            document.querySelectorAll('.close').forEach(button => {
+                button.addEventListener('click', closeModal);
+            });
+
+            window.onclick = function(event) {
+                if (event.target == itemModal || event.target == summaryModal || event.target == userDetailsModal) {
+                    closeModal();
+                }
+            };
+
+            searchInput.addEventListener('input', (event) => {
+                const query = event.target.value.toLowerCase();
+                items.forEach(item => {
+                    const itemName = item.getAttribute('data-name').toLowerCase();
+                    if (itemName.includes(query)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+
+            function openItemModal(name, price) {
+                if (modalItemName && modalItemPrice && itemQty) {
+                    modalItemName.textContent = name;
+                    modalItemPrice.textContent = `Price: ₦${price}`;
+                    currentQty = 1;
+                    itemQty.textContent = currentQty;
+                    itemModal.style.display = 'flex';
+                }
+            }
+
+            function updateQuantity(amount) {
+                currentQty = Math.max(1, currentQty + amount);
+                if (itemQty) {
+                    itemQty.textContent = currentQty;
+                }
+            }
+
+            function addToCart() {
+                if (modalItemName && modalItemPrice) {
+                    const itemName = modalItemName.textContent;
+                    const itemPrice = parseFloat(modalItemPrice.textContent.replace('Price: ₦', ''));
+                    const item = { name: itemName, price: itemPrice, quantity: currentQty };
+                    cart.push(item);
+                    itemModal.style.display = 'none';
+                }
+            }
+
+            function showCartSummary() {
+                const orderSummary = document.getElementById('orderSummary');
+                if (orderSummary) {
+                    orderSummary.innerHTML = '';
+                    let totalPrice = 0;
+                    cart.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        const itemTotal = item.price * item.quantity;
+                        itemElement.textContent = `${item.name} - ₦${item.price} x ${item.quantity} = ₦${itemTotal.toFixed(2)}`;
+                        orderSummary.appendChild(itemElement);
+                        totalPrice += itemTotal;
+                    });
+                    if (totalPriceElement) {
+                        totalPriceElement.textContent = totalPrice.toFixed(2);
+                    }
+                    summaryModal.style.display = 'flex';
+                }
+            }
+
+            function handleSubmit(event) {
+                event.preventDefault();
+                if (!checkInputs()) {
+                    return;
+                }
+
+                const name = nameField.value.trim();
+                const phone = phoneField.value.trim();
+                const address = addressField.value.trim();
+
+                const emailContent = `
+                    Name: ${name}\n
+                    Phone Number: ${phone}\n
+                    Home Address: ${address}\n
+                    Order Details:\n
+                    ${cart.map(item => `${item.name}: ₦${item.price} x ${item.quantity} = ₦${item.price * item.quantity}`).join('\n')}
+                    Total Price: ₦${totalPriceElement.textContent}
+                `;
+
+                Email.send({
+                    Host: "smtp.elasticemail.com",
+                    Username: "icbannigeria@gmail.com",
+                    Password: "9EB1C37F763B9EADA66E1A927852D8D1E8F6",
+                    To: 'icbannigeria@gmail.com',
+                    From: "icbannigeria@gmail.com",
+                    Subject: "dry cleaning order alart!!! ",
+                    Body: emailContent
+                }).then(
+                    message => {
+                        handleEmailResponse(message);
+                    }
+                );
+
+                userDetailsModal.style.display = 'none';
+            }
+
+            function handleEmailResponse(message) {
+                if (message === "OK") {
+                    Swal.fire({
+                        title: "Thank you!",
+                        text: "A payment account would be sent to you !!!",
+                        icon: "success"
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to send order. Please try again later.",
+                        icon: "error"
+                    });
+                }
+            }
+
+           
+            function closeModal() {
+                itemModal.style.display = 'none';
+                summaryModal.style.display = 'none';
+                userDetailsModal.style.display = 'none';
+            }
+
+            function checkInputs() {
+                const inputs = [nameField, phoneField, addressField];
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (input.value.trim() === '') {
+                        input.classList.add('error');
+                        isValid = false;
+                    } else {
+                        input.classList.remove('error');
+                    }
+                });
+
+                return isValid;
+            }
+        });
+    </script>
+</body>
+</html>

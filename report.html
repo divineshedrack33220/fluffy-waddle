@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Freeman&display=swap" rel="stylesheet">
+    <title>Report Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10" defer></script>
+    <style>
+        body {
+            font-family: "Freeman", sans-serif;
+            background-color: #e0f1ff;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #e0f1ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+            margin-bottom: 70px; /* space for bottom nav */
+            box-sizing: border-box;
+        }
+        .top-nav {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-nav img {
+            width: 120px;
+            height: auto;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        header h1 span {
+            color: #0f75bc;
+        }
+
+        .menu-icon {
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .report-section {
+            margin-top: 20px;
+        }
+
+        .report-section h2 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .report {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.158);
+        }
+
+        .report h3 {
+            font-size: 1em;
+            color: #0f75bc;
+            margin-bottom: 5px;
+        }
+
+        .report p {
+            font-size: 0.9em;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .add-report {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.158);
+        }
+
+        .add-report h2 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .add-report form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .add-report form input, 
+        .add-report form textarea {
+            font-size: 1em;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .add-report form button {
+            font-size: 1em;
+            padding: 10px;
+            background-color: #0f75bc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-report form button:hover {
+            background-color: #0056b3;
+        }
+
+        .bottom-nav a {
+            color: #1b1b1b;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            font-weight: 200;
+            align-items: center;
+        }
+
+        .bottom-nav a img {
+            width: 25px;
+            height: 25px;
+            margin-bottom: 1px;
+        }
+
+        /* Responsive styles */
+        @media (min-width: 768px) {
+            body {
+                padding: 40px;
+            }
+
+            .bottom-nav {
+                padding: 10px 0;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                padding: 40px;
+            }
+
+            .add-report form input, 
+            .add-report form textarea {
+                font-size: 1.2em;
+            }
+
+            .add-report form button {
+                font-size: 1.2em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <img src="img/Laundry-Spot.png" alt="Logo">
+    </nav>
+    <div class="container">
+        <header>
+            <h1>Submit a <span>Report</span></h1>
+            <img style="width: 50px;" src="img/verified.png" alt="Menu">
+        </header>
+        <div class="add-report">
+            <h2>Add Your Report</h2>
+            <form id="reportForm">
+                <input type="text" id="reporterName" name="reporterName" placeholder="Your Name" required>
+                <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                <textarea id="reportDetails" name="reportDetails" placeholder="Report Details" rows="4" required></textarea>
+                <button type="submit">Submit Report</button>
+            </form>
+        </div>
+        <div class="report-section">
+            <h2>Recent Reports</h2>
+            <div class="report">
+                <h3>Better Network</h3>
+                <p><strong>Reporter:</strong> jordan </p>
+                <p>There was a recurring network issue that needed to be addressed immediately.</p>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <a href="bord.html">
+            <img src="img/home.png" alt="Home">
+            <span>Home</span>
+        </a>
+        <a href="packages.html">
+            <img src="img/favorite.png" alt="Services">
+            <span>Packages</span>
+        </a>
+        <a href="reviews.html">
+            <img src="img/reviews.png" alt="Profile">
+            <span>Reviews</span>
+        </a>
+        <a href="report.html">
+            <img src="img/report_.png" alt="Orders">
+            <span>Reports</span>
+        </a>
+    </div>
+    
+
+    <script>
+        const form = document.getElementById("reportForm");
+        const reporterNameField = document.getElementById("reporterName");
+        const subjectField = document.getElementById("subject");
+        const reportDetailsField = document.getElementById("reportDetails");
+
+        function sendEmail() {
+            const bodyMessage = `
+                Name: ${reporterNameField.value}<br>
+                Subject: ${subjectField.value}<br>
+                Report Details: ${reportDetailsField.value}
+            `;
+
+            Email.send({
+                Host: "smtp.elasticemail.com",
+                Username: "icbannigeria@gmail.com",
+                Password: "9EB1C37F763B9EADA66E1A927852D8D1E8F6",
+                To: 'icbannigeria@gmail.com',
+                From: "icbannigeria@gmail.com",
+                Subject: "New Report Submission",
+                Body: bodyMessage
+            }).then(
+                message => {
+                    if (message === "OK") {
+                        Swal.fire({
+                            title: "Thank you!",
+                            text: "A payment account would be sent to you !!!",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Failed to send report. Please try again later.",
+                            icon: "error"
+                        });
+                    }
+                }
+            );
+        }
+
+        function checkInputs() {
+            const items = [reporterNameField, subjectField, reportDetailsField];
+            let allValid = true;
+
+            items.forEach(item => {
+                if (item.value === "") {
+                    item.classList.add("error");
+                    allValid = false;
+                } else {
+                    item.classList.remove("error");
+                }
+                item.addEventListener("input", () => {
+                    if (item.value !== "") {
+                        item.classList.remove("error");
+                    } else {
+                        item.classList.add("error");
+                    }
+                });
+            });
+
+            return allValid;
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (checkInputs()) {
+                sendEmail();
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Freeman&display=swap" rel="stylesheet">
+    <title>Laundry Service Dashboard</title>
+    <script src="app.js" defer></script>
+    <style>
+        body {
+            font-family: "Freeman", sans-serif;
+            background-color: #e0f1ff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .top-nav {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-nav img {
+            width: 120px;
+            height: auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 390px;
+            background-color: #e0f1ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 90px; /* Space for top nav */
+            margin-bottom: 50px; /* Space for bottom nav */
+            box-sizing: border-box;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.5em;
+            color: #333;
+            margin: 0;
+        }
+
+        header h1 span {
+            color: #0f74bc;
+        }
+
+        .image-box {
+            width: 100%;
+            height: 170px; 
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            opacity: 0;
+            animation: slide 15s infinite;
+        }
+
+        .image-box img:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .image-box img:nth-child(2) {
+            animation-delay: 5s;
+        }
+
+        .image-box img:nth-child(3) {
+            animation-delay: 10s;
+        }
+
+        @keyframes slide {
+            0% { opacity: 0; }
+            5% { opacity: 1; }
+            33% { opacity: 1; }
+            38% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .service {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.24);
+            transition: background-color 0.3s;
+        }
+
+        .service img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .service p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #4f4f51;
+        }
+
+        .service:hover {
+            background-color: #d0e8ff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+
+        .services a {
+            text-decoration: none;
+        }
+
+        .orders {
+            margin-top: 20px;
+        }
+
+        .orders h2 {
+            font-size: 1.2em;
+            color: #131313;
+            border-bottom: 1px solid #38383879;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .order {
+            background-color: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.247);
+            text-align: center;
+        }
+
+        .order p {
+            margin: 0;
+            color: #242424;
+        }
+
+        .order .status {
+            color: #0f75bc;
+            font-weight: bold;
+        }
+
+        .bottom-nav a {
+            color: #1b1b1b;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            font-weight: 200;
+            align-items: center;
+        }
+
+        .bottom-nav a img {
+            width: 25px;
+            height: 25px;
+            margin-bottom: 1px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                padding: 20px;
+            }
+
+            .image-box {
+                height: 200px;
+            }
+
+            .services {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 30px;
+            }
+
+            .service img {
+                width: 70px;
+                height: 70px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 800px;
+            }
+
+            .services {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 40px;
+            }
+        }
+
+        .gold-star {
+            color: gold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 15px;
+            width: 60%;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 5px solid rgba(0, 0, 0, 0.87);
+            border-top: 5px solid #0f75bc;
+            border-radius: 50%;
+            animation: spin 8ms linear infinite;
+            z-index: 1000;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="top-nav">
+        <img src="img/Laundry-Spot.png" alt="Logo">
+    </nav>
+    <div class="container">
+        <div class="image-box">
+            <img src="img/laundry-detergent-ad-stain-remover-banner-design-vector-25044581.jpg" alt="Slide 1">
+            <img src="img/stain-remover-ad-water-washing-260nw-1538073326.webp" alt="Slide 2">
+            <img src="img/images (19).jpeg" alt="Slide 3">
+        </div>
+        <div class="services">
+            <a href="wash.html">
+                <div class="service">
+                    <img src="img/laundry-basket.png" alt="Washing">
+                    <p>Washing</p>
+                </div>
+            </a>
+            <a href="iron.html">
+                <div class="service">
+                    <img src="img/iron.png" alt="Steam Press">
+                    <p>Steam Press</p>
+                </div>
+            </a>
+            <a href="drycleaning.html">
+                <div class="service">
+                    <img src="img/washing-machine .png" alt="Dry Cleaning">
+                    <p>Dry Cleaning</p>
+                </div>
+            </a>
+            <a href="bleach.html">
+                <div class="service">
+                    <img src="img/toilet-bleach.png" alt="Stain Removal">
+                    <p>Stain Removal</p>
+                </div>
+            </a>
+        </div>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p id="modalContent"></p>
+            </div>
+        </div>
+        <button id="myBtn" style="display: none;">Open Modal</button>
+        <div class="orders">
+            <h2>Call for pickup</h2>
+            <div class="order">
+                <a style="text-decoration: none;" href="#"><p>Call : #124587541</p></a>
+                <p class="status">Out for Delivery</p>
+            </div>
+        </div>
+    </div>
+    <div class="spinner" id="spinner"></div>
+    <div class="bottom-nav">
+        <a href="bord.html">
+            <img src="img/home.png" alt="Home">
+            <span>Home</span>
+        </a>
+        <a href="packages.html">
+            <img src="img/favorite.png" alt="Services">
+            <span>Packages</span>
+        </a>
+        <a href="reviews.html">
+            <img src="img/reviews.png" alt="Profile">
+            <span>Reviews</span>
+        </a>
+        <a href="report.html">
+            <img src="img/report_.png" alt="Orders">
+            <span>Reports</span>
+        </a>
+    </div>
+    <script>
+        const spinner = document.getElementById('spinner');
+
+        document.querySelectorAll('.bottom-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                spinner.style.display = 'block';
+                const targetUrl = e.target.closest('a').href;
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Freeman&display=swap" rel="stylesheet">
+    <title>Packages - Laundry Service</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10" defer></script>
+</head>
+<style>
+    body {
+        font-family: "Freeman", sans-serif;
+        background-color: #e0f1ff;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Corrected height */
+        flex-direction: column;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 370px; /* Adjusted for phone screen */
+        background-color: #e0f1ff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+        height: auto;
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+        color: #333;
+    }
+
+    header h1 span {
+        color: #0f75bc;
+    }
+
+    .packages {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .package {
+        background-color: white;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.171);
+        transition: background-color 0.3s;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .package h2 {
+        margin: 0;
+        color: #333;
+        font-size: 1.2em;
+    }
+
+    .package p {
+        margin: 10px 0;
+        color: #666;
+    }
+
+    .package .price {
+        color: #0f75bc;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .package img {
+        max-width: 100px;
+        margin-bottom: 10px;
+    }
+
+    .package:hover {
+        background-color: #d0e8ff;
+    }
+
+    .bottom-nav a {
+        color: #1b1b1b;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        font-weight: 200;
+        align-items: center;
+    }
+
+    .bottom-nav a img {
+        width: 25px;
+        height: 25px;
+        margin-bottom: 1px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+        position: relative;
+        text-align: center;
+    }
+
+    .modal-content img {
+        max-width: 100px;
+        margin-bottom: 10px;
+    }
+
+    .close {
+        color: #353535;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-content button {
+        background-color: #0f75bc;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+    }
+
+    .modal-content button:hover {
+        background-color: #0056b3;
+    }
+
+    .top-nav {
+        width: 100%;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        z-index: 1000;
+        margin-bottom: 100px;
+    }
+
+    .top-nav img {
+        width: 120px;
+        height: auto;
+    }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        background-color: #ffffff;
+        border-radius: 15px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px 0;
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .summary {
+        text-align: left;
+        margin-bottom: 20px;
+    }
+
+    .summary h3 {
+        margin: 10px 0;
+    }
+
+    .summary p {
+        margin: 5px 0;
+    }
+
+    .error {
+        border-color: red;
+    }
+  /* Modal container */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    animation: fadeIn 0.5s; /* Fade in effect */
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%; /* Reduced from 90% to 70% */
+    max-width: 480px; /* Reduced from 600px to 480px */
+    border-radius: 13px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: slideIn 0.5s; /* Slide in effect */
+}
+
+/* Close button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form elements */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin: 5px 0 5px;
+}
+
+input[type="text"],
+input[type="tel"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.226);
+    border-radius: 15px;
+    font-size: 16px;
+    width: calc(100% - 22px);
+}
+
+button[type="submit"] {
+    background-color: #1d7dc0;
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #0b5183;
+}
+
+/* Summary section */
+.summary {
+    margin-bottom: 20px;
+}
+
+.summary h3 {
+    margin-bottom: 10px;
+}
+
+.summary p {
+    margin: 5px 0;
+}
+
+/* Media queries for responsiveness */
+@media (min-width: 600px) {
+    .modal-content {
+        width: 64%; /* Reduced from 80% to 64% */
+    }
+}
+
+@media (min-width: 768px) {
+    .modal-content {
+        width: 48%; /* Reduced from 60% to 48% */
+    }
+}
+
+@media (min-width: 1024px) {
+    .modal-content {
+        width: 40%; /* Reduced from 50% to 40% */
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes slideIn {
+    from {transform: translateY(-50px); opacity: 0;}
+    to {transform: translateY(0); opacity: 1;}
+}
+
+/* Display the modal */
+.modal.show {
+    display: block;
+}
+
+</style>
+<body>
+    <nav class="top-nav">
+        <img src="img/Laundry-Spot.png" alt="Logo">
+    </nav>
+    <div class="container">
+        <header>
+            <h1>Our <span>Packages</span></h1>
+            <img style="width: 50px;" src="img/inventory.png" alt="Menu">
+        </header>
+        <div class="packages">
+            <div class="package" data-name="Single" data-description="Includes washing and drying" data-price="20,000" data-image="img/user-black-close-up-shape.png">
+                <img src="img/user-black-close-up-shape.png" alt="Basic Package">
+                <h2>Single</h2>
+                <p class="price">20,000</p>
+            </div>
+            <div class="package" data-name="Couples" data-description="Includes washing, drying, and folding" data-price="35,000" data-image="img/couple.png">
+                <img src="img/couple.png" alt="Standard Package">
+                <h2>Couples</h2>
+                <p class="price">35,000</p>
+            </div>
+            <div class="package" data-name="Small family" data-description="Includes washing, drying, folding, and ironing" data-price="50,000" data-image="img/family (1).png">
+                <img src="img/family (1).png" alt="Premium Package">
+                <h2>Small family</h2>
+                <p class="price">50,000</p>
+            </div>
+            <div class="package" data-name="Big family" data-description="Includes all premium services plus dry cleaning" data-price="80,000" data-image="img/happy.png">
+                <img src="img/happy.png" alt="Deluxe Package">
+                <h2>Big family</h2>
+                <p class="price">80,000</p>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <a href="bord.html">
+            <img src="img/home.png" alt="Home">
+            <span>Home</span>
+        </a>
+        <a href="packages.html">
+            <img src="img/favorite.png" alt="Services">
+            <span>Packages</span>
+        </a>
+        <a href="reviews.html">
+            <img src="img/reviews.png" alt="Profile">
+            <span>Reviews</span>
+        </a>
+        <a href="report.html">
+            <img src="img/report_.png" alt="Orders">
+            <span>Reports</span>
+        </a>
+    </div>
+    <div id="packageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="toggleModal('packageModal', false)">&times;</span>
+            <img id="packageImage" src="img/support.png" alt="Package Image">
+            <h2 id="packageName"></h2>
+            <p id="packageDescription"></p>
+            <p id="packagePrice"></p>
+            <button onclick="showOrderModal()">Get package</button>
+        </div>
+    </div>
+    
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="toggleModal('orderModal', false)">&times;</span>
+        <h2>Enter Your Details</h2>
+        <div class="summary">
+            <h3>Selected Package</h3>
+            <p id="summaryName"></p>
+            <p id="summaryDescription"></p>
+            <p id="summaryPrice"></p>
+        </div>
+        <form id="orderForm" onsubmit="submitOrder(event)">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="number">Number:</label>
+            <input type="tel" id="number" name="number" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+    <script>
+        let selectedPackage = {};
+
+        document.querySelectorAll('.package').forEach(pkg => {
+            pkg.addEventListener('click', () => showModal(pkg.dataset));
+        });
+
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = show ? 'flex' : 'none';
+        }
+
+        function showModal({ name, description, price, image }) {
+            selectedPackage = { name, description, price, imageSrc: image };
+
+            document.getElementById('packageName').textContent = name;
+            document.getElementById('packageDescription').textContent = description;
+            document.getElementById('packagePrice').textContent = "Price: " + price;
+            document.getElementById('packageImage').src = image;
+
+            toggleModal('packageModal', true);
+        }
+
+        function showOrderModal() {
+            document.getElementById('summaryName').textContent = "Name: " + selectedPackage.name;
+            document.getElementById('summaryDescription').textContent = "Description: " + selectedPackage.description;
+            document.getElementById('summaryPrice').textContent = "Price: " + selectedPackage.price;
+
+            toggleModal('packageModal', false);
+            toggleModal('orderModal', true);
+        }
+
+        function sendEmail(name, number) {
+            const bodyMessage = `
+                Package Name: ${selectedPackage.name}<br>
+                Package Description: ${selectedPackage.description}<br>
+                Package Price: ${selectedPackage.price}<br>
+                Customer Name: ${name}<br>
+                Customer Number: ${number}
+            `;
+            function toggleModal(modalId, show) {
+        const modal = document.getElementById(modalId);
+        modal.style.display = show ? 'block' : 'none';
+    }
+
+    function submitOrder(event) {
+        event.preventDefault();
+        // Add form submission logic here
+        toggleModal('orderModal', false);
+    }
+
+    // Example to show the modal
+    toggleModal('orderModal', true);
+            Email.send({
+                Host: "smtp.elasticemail.com",
+                Username: "icbannigeria@gmail.com",
+                Password: "9EB1C37F763B9EADA66E1A927852D8D1E8F6",
+                To: 'icbannigeria@gmail.com',
+                From: "icbannigeria@gmail.com",
+                Subject: "New Package Order",
+                Body: bodyMessage
+            }).then(
+                message => {
+                    if (message === "OK") {
+                        Swal.fire({
+                            title: "Thank you!",
+                            text: "A payment account would be sent to you !!!",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Failed to send order. Please try again later.",
+                            icon: "error"
+                        });
+                    }
+                }
+            );
+        }
+
+        function checkInputs() {
+            const name = document.getElementById("name");
+            const number = document.getElementById("number");
+            let allValid = true;
+
+            [name, number].forEach(input => {
+                if (input.value.trim() === "") {
+                    input.classList.add("error");
+                    allValid = false;
+                } else {
+                    input.classList.remove("error");
+                }
+                input.addEventListener("input", () => {
+                    if (input.value.trim() !== "") {
+                        input.classList.remove("error");
+                    } else {
+                        input.classList.add("error");
+                    }
+                });
+            });
+
+            return allValid;
+        }
+
+        function submitOrder(event) {
+            event.preventDefault();
+            if (checkInputs()) {
+                const name = document.getElementById("name").value.trim();
+                const number = document.getElementById("number").value.trim();
+                sendEmail(name, number);
+            }
+        }
+    </script>
+</body>
+</html>
